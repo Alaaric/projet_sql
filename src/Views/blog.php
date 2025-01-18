@@ -65,21 +65,25 @@
     <?php endif; ?>
 
     <h2>Articles</h2>
-    <?php foreach ($articles as $article): ?>
-        <article>
-            <h3><?= htmlspecialchars($article->getTitre()) ?></h3>
-            <p><?= htmlspecialchars($article->getContenu()) ?></p>
-            <p><strong>Auteur:</strong> <?= htmlspecialchars($article->getAuteur()) ?></p>
-            <p><strong>Date de création:</strong> <?= htmlspecialchars($article->getDateCreation()->format('Y-m-d H:i:s')) ?></p>
-            <p><strong>Tags:</strong> <?= htmlspecialchars(implode(', ', $article->getTags())) ?></p>
-            <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin'): ?>
-                <form action="/blog/delete/<?= $article->getId() ?>" method="POST" style="display:inline;">
-                    <button type="submit" class="btn no">Supprimer</button>
-                </form>
-                <a href="/blog/edit/<?= $article->getId() ?>">Modifier</a>
-            <?php endif; ?>
-        </article>
-    <?php endforeach; ?>
+    <?php if (!empty($articles)): ?>
+        <?php foreach ($articles as $article): ?>
+            <article>
+                <h3><?= htmlspecialchars($article->getTitre()) ?></h3>
+                <p><?= htmlspecialchars($article->getContenu()) ?></p>
+                <p><strong>Auteur:</strong> <?= htmlspecialchars($article->getAuteur()) ?></p>
+                <p><strong>Date de création:</strong> <?= htmlspecialchars($article->getDateCreation()->format('Y-m-d H:i:s')) ?></p>
+                <p><strong>Tags:</strong> <?= htmlspecialchars(implode(', ', $article->getTags())) ?></p>
+                <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin'): ?>
+                    <form action="/blog/delete/<?= $article->getId() ?>" method="POST" style="display:inline;">
+                        <button type="submit" class="btn no">Supprimer</button>
+                    </form>
+                    <a href="/blog/edit/<?= $article->getId() ?>">Modifier</a>
+                <?php endif; ?>
+            </article>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p>Aucun article trouvé.</p>
+    <?php endif; ?>
 </main>
 
 <script>

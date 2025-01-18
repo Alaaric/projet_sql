@@ -57,7 +57,8 @@ class BlogController extends AbstractController
                 $data['titre'],
                 $data['contenu'],
                 $data['auteur'],
-                $data['date_creation'],
+                
+                new \DateTime(),
                 $tags
             );
             $this->model->update($id, $article);
@@ -65,7 +66,7 @@ class BlogController extends AbstractController
         } else {
             $article = $this->model->findById($id);
             $tags = $this->model->getUniqueTags();
-            $this->render('blog', ['article' => $article, 'allTags' => $tags]);
+            $this->render('blog', ['article' => $article, 'tags' => $tags]);
         }
     }
 

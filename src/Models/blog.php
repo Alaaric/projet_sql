@@ -83,9 +83,12 @@ class Blog extends MongoAbstractModel
 
     public function update(string $id, Article $article): void
     {
+        $data = $this->extractData($article);
+        unset($data['date_creation']);
+
         $this->collection->updateOne(
             ['_id' => new ObjectId($id)],
-            ['$set' => $this->extractData($article)]
+            ['$set' => $data]
         );
     }
 }
