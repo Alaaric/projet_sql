@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Blog;
+use App\Entities\Article;
 
 class BlogController extends AbstractController
 {
@@ -36,8 +37,15 @@ class BlogController extends AbstractController
     {
         if ($this->isRequestMethod('POST')) {
             $data = $this->getInput();
-            $data['date_creation'] = new \MongoDB\BSON\UTCDateTime();
-            $this->model->insert($data);
+            $article = new Article(
+                '',
+                $data['titre'],
+                $data['contenu'],
+                $data['auteur'],
+                new \DateTime(),
+                explode(',', $data['tags'])
+            );
+            $this->model->insert($article);
             $this->redirect('/blog');
         } else {
             $this->render('create_article');
@@ -48,8 +56,15 @@ class BlogController extends AbstractController
     {
         if ($this->isRequestMethod('POST')) {
             $data = $this->getInput();
-            $data['tags'] = array_map('trim', explode(',', $data['tags']));
-            $this->model->update($id, $data);
+            $article = new Article(
+                $id,
+                $data['titre'],
+                $data['contenu'],
+                $data['auteur'],
+                $data['date_creation'],
+                explode(',', $data['tags'])
+            );
+            $this->model->update($id, $article);
             $this->redirect('/blog');
         } else {
             $article = $this->model->findById($id);

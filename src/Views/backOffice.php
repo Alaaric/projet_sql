@@ -19,10 +19,10 @@
                     <?php 
                         $found = false;
                         foreach ($productsCountByCategory as $categoryProductCount): 
-                            if ($categoryProductCount['category_id'] === $category['id']) : 
+                            if ($categoryProductCount->getCategory()->getId() === $category->getId()) : 
                                 $found = true;
                         ?>
-                                <td><?= $categoryProductCount['product_count'] ?></td>
+                                <td><?= $categoryProductCount->getProductCount() ?></td>
                         <?php 
                                 break;
                             endif; 
@@ -37,8 +37,8 @@
                             <form action="/backoffice/categories/edit" method="POST" style="display:inline;">
                                 <input type="hidden" name="action" value="edit">
                                 <input type="hidden" name="entity" value="category">
-                                <input type="hidden" name="id" value="<?= $category['id'] ?>">
-                                <input type="text" name="name" value="<?= $category['name'] ?>">
+                                <input type="hidden" name="id" value="<?= $category->getId() ?>">
+                                <input type="text" name="name" value="<?= $category->getName() ?>">
                         </td>
                         <td sl>
                                 <button type="submit" class="form-button">Éditer</button>
@@ -47,7 +47,7 @@
                             <form action="/backoffice/categories/delete" method="POST" style="display:inline;">
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="entity" value="category">
-                                <input type="hidden" name="id" value="<?= $category['id'] ?>">
+                                <input type="hidden" name="id" value="<?= $category->getId() ?>">
                                 <button type="submit" class="form-button">Supprimer</button>
                             </form>
                         </td>
@@ -82,28 +82,29 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($products as $product): ?>
+                <?php foreach ($products as $productDTO): ?>
+                    <?php $product = $productDTO->getProduct(); ?>
                     <tr>
                         <form action="/backoffice/products/edit" method="POST" enctype="multipart/form-data" style="display:inline;" class="edit-product">
                             <td>
                                 <input type="hidden" name="action" value="edit">
                                 <input type="hidden" name="entity" value="product">
-                                <input type="hidden" name="id" value="<?= $product['product_id'] ?>">
-                                <input type="text" name="name" value="<?= htmlspecialchars($product['product_name']) ?>" required class="form-input">
+                                <input type="hidden" name="id" value="<?= $product->getId() ?>">
+                                <input type="text" name="name" value="<?= htmlspecialchars($product->getName()) ?>" required class="form-input">
                         </td>
                         <td>
-                             <textarea name="description" required class="form-textarea"><?= htmlspecialchars($product['description']) ?></textarea>
+                             <textarea name="description" required class="form-textarea"><?= htmlspecialchars($product->getDescription()) ?></textarea>
                         </td>
                         <td>
-                            <input type="number" name="price" value="<?= htmlspecialchars($product['price']) ?>" step="0.01" required class="form-input number-input">
+                            <input type="number" name="price" value="<?= htmlspecialchars($product->getPrice()) ?>" step="0.01" required class="form-input number-input">
                         </td>
                         <td>
-                            <input type="number" name="stock" value="<?= htmlspecialchars($product['stock']) ?>" required class="form-input number-input">
+                            <input type="number" name="stock" value="<?= htmlspecialchars($product->getStock()) ?>" required class="form-input number-input">
                         </td>
                         <td>
                             <select name="categoryId" required class="form-input" class="form-file-input">
                                 <?php foreach ($categories as $category): ?>
-                                    <option value="<?= $category['id'] ?>" <?= $product['category_id'] == $category['id'] ? 'selected' : '' ?>><?= $category['name'] ?></option>
+                                    <option value="<?= $category->getId() ?>" <?= $product->getCategoryId() == $category->getId() ? 'selected' : '' ?>><?= $category->getName() ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </td>
@@ -112,8 +113,8 @@
                                 choisir une image
                             </label>
                             <input type="file" id="file-upload" name="image" class="file-upload">
-                            <input type="hidden" name="current_image" value="<?= htmlspecialchars($product['image']) ?>">
-                            <img src="/assets/<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['image']) ?>" width="80">
+                            <input type="hidden" name="current_image" value="<?= htmlspecialchars($product->getImage()) ?>">
+                            <img src="/assets/<?= htmlspecialchars($product->getImage()) ?>" alt="<?= htmlspecialchars($product->getImage()) ?>" width="80">
                         </td>
                         <td class="product-actions">
                             <button type="submit" class="form-button">Éditer</button>
@@ -121,7 +122,7 @@
                             <form action="/backoffice/products/delete" method="POST">
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="entity" value="product">
-                                <input type="hidden" name="id" value="<?= $product['product_id'] ?>">
+                                <input type="hidden" name="id" value="<?= $product->getId() ?>">
                                 <button type="submit" class="form-button">Supprimer</button>
                             </form>
                         </td>
@@ -149,7 +150,7 @@
             <label for="category_id">Catégorie :</label>
             <select id="category_id" name="category_id" required>
                 <?php foreach ($categories as $category): ?>
-                    <option value="<?= $category['id'] ?>"><?= htmlspecialchars($category['name']) ?></option>
+                    <option value="<?= $category->getId() ?>"><?= htmlspecialchars($category->getName()) ?></option>
                 <?php endforeach; ?>
             </select>
 
@@ -175,15 +176,15 @@
             <tbody>
                 <?php foreach ($users as $user): ?>
                     <tr>
-                        <td><?= htmlspecialchars($user['email']) ?></td>
+                        <td><?= htmlspecialchars($user->getEmail()) ?></td>
                         <td>
                             <form action="/backoffice/users/edit" method="POST" style="display:inline;">
                                 <input type="hidden" name="action" value="edit">
                                 <input type="hidden" name="entity" value="user">
-                                <input type="hidden" name="id" value="<?= $user['id'] ?>">
+                                <input type="hidden" name="id" value="<?= $user->getId() ?>">
                                 <select name="role" id="">
-                                    <option value="admin" <?= $user['role'] === 'admin' ? 'selected' : "" ?>>admin</option>
-                                    <option value="client" <?= $user['role'] === 'client' ? 'selected' : "" ?>>client</option>
+                                    <option value="admin" <?= $user->getRole() === 'admin' ? 'selected' : "" ?>>admin</option>
+                                    <option value="client" <?= $user->getRole() === 'client' ? 'selected' : "" ?>>client</option>
                                 </select>
                         </td>
                         <td>
@@ -193,7 +194,7 @@
                             <form action="/backoffice/users/delete" method="POST" style="display:inline;">
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="entity" value="user">
-                                <input type="hidden" name="id" value="<?= $user['id'] ?>">
+                                <input type="hidden" name="id" value="<?= $user->getId() ?>">
                                 <button type="submit"  class="form-button">Delete</button>
                             </form>
                         </td>

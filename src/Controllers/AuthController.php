@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\User;
+use App\Entities\User as UserEntity;
 
 class AuthController extends AbstractController
 {
@@ -32,13 +33,16 @@ class AuthController extends AbstractController
             return;
         }
 
-        $this->userModel->create([
-            'name' => $data['name'],
-            'firstname' => $data['firstname'],
-            'email' => $data['email'],
-            'role' => 'client',
-            'password' => password_hash($data['password'], PASSWORD_DEFAULT),
-        ]);
+        $user = new UserEntity(
+            '',
+            $data['name'],
+            $data['firstname'],
+            $data['email'],
+            password_hash($data['password'], PASSWORD_DEFAULT),
+            'client'
+        );
+
+        $this->userModel->create($user);
 
         $this->render('login', ['success' => 'Inscription réussie. Vous pouvez maintenant vous connecter.']);
         exit();
@@ -53,14 +57,13 @@ class AuthController extends AbstractController
             return;
         }
 
-
         $user = $this->userModel->findByEmail($data['email']);
 
-        if ($user && password_verify($data['password'], $user['password'])) {
+        if ($user && password_verify($data['password'], $user->getPassword())) {
             $_SESSION['user'] = [
-                'id' => $user['id'],
-                'name' => $user['name'],
-                'role' => $user['role'],
+                'id' => $user->getId(),
+                'name' => $user->getName(),
+                'role' => $user->getRole(),
             ];
 
             $this->redirect('/');

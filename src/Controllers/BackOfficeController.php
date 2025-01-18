@@ -5,6 +5,9 @@ namespace App\Controllers;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
+use App\Entities\Category as CategoryEntity;
+use App\Entities\Product as ProductEntity;
+use App\Entities\User as UserEntity;
 
 class BackOfficeController extends AbstractController
 {
@@ -62,14 +65,16 @@ class BackOfficeController extends AbstractController
         switch ($action) {
             case 'add':
                 if (isset($data['name']) && !empty($data['name'])) {
-                    $this->categoryModel->create($data['name']);
+                    $category = new CategoryEntity('', $data['name']);
+                    $this->categoryModel->create($category);
                 } else {
                     $this->redirect('/backoffice');
                 }
                 break;
             case 'edit':
                 if (isset($data['id'], $data['name']) && !empty($data['name'])) {
-                    $this->categoryModel->update($data['id'], $data['name']);
+                    $category = new CategoryEntity($data['id'], $data['name']);
+                    $this->categoryModel->update( $category);
                 } else {
                     $this->redirect('/backoffice');
                 }
@@ -93,8 +98,16 @@ class BackOfficeController extends AbstractController
                 if (
                     isset($data['name'], $data['description'], $data['price'], $data['category_id']) && is_numeric($data['price'])
                 ) {
-                    $data['image'] = !empty($_FILES['image']['name']) ? $this->uploadImage($_FILES['image']) : 'chat1.jpg';
-                    $this->productModel->create($data);
+                    $product = new ProductEntity(
+                        '',
+                        $data['name'],
+                        $data['description'],
+                        (float)$data['price'],
+                        (int)$data['stock'],
+                        $data['category_id'],
+                        $data['image'] = !empty($_FILES['image']['name']) ? $this->uploadImage($_FILES['image']) : 'chat1.jpg'
+                    );
+                    $this->productModel->create($product);
                 } else {
                     $this->redirect('/backoffice');
                 }
@@ -104,8 +117,16 @@ class BackOfficeController extends AbstractController
                     isset($data['id'], $data['name'], $data['description'], $data['price'], $data['categoryId']) &&
                     is_numeric($data['price'])
                 ) {
-                    $data['image'] = $_FILES['image']['error'] !== 4 ? $this->uploadImage($_FILES['image']) : $data['current_image'];
-                    $this->productModel->update($data['id'], $data);
+                    $product = new ProductEntity(
+                        $data['id'],
+                        $data['name'],
+                        $data['description'],
+                        (float)$data['price'],
+                        (int)$data['stock'],
+                        $data['categoryId'],
+                        $data['image'] = $_FILES['image']['error'] !== 4 ? $this->uploadImage($_FILES['image']) : $data['current_image']
+                    );
+                    $this->productModel->update($product);
                 } else {
                     $this->redirect('/backoffice');
                 }
@@ -125,9 +146,24 @@ class BackOfficeController extends AbstractController
     private function handleUserAction($action, $data)
     {
         switch ($action) {
+            case 'add':
+                if (isset($data['name'], $data['firstname'], $data['email'], $data['password'], $data['role']) && !empty($data['name'])) {
+                    $user = new UserEntity(
+                        '',
+                        $data['name'],
+                        $data['firstname'],
+                        $data['email'],
+                        password_hash($data['password'], PASSWORD_DEFAULT),
+                        $data['role']
+                    );
+                    $this->userModel->create($user);
+                } else {
+                    $this->redirect('/backoffice');
+                }
+                break;
             case 'edit':
                 if (isset($data['id'], $data['role'])) {
-                    $this->userModel->update($data['id'], $data);
+                    $this->userModel->update($data['id'], $data['role']);
                 } else {
                     $this->redirect('/backoffice');
                 }

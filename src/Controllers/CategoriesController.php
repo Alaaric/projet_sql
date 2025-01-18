@@ -18,9 +18,4 @@ class CategoriesController extends AbstractController
     $this->render('categories', ['categories' => $categories]);
   }
 
-  public function debug()
-  {
-
-    $this->render('home', ['category' => 'rien']);
-  }
 }

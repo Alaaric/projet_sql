@@ -6,8 +6,8 @@
         <select name="category_id" id="category_id" class="fields">
             <option value="">Toutes</option>
             <?php foreach ($categories as $category): ?>
-                <option value="<?= $category['id'] ?>" <?= isset($filters['category_id']) && $filters['category_id'] == $category['id'] ? 'selected' : '' ?>>
-                    <?= htmlspecialchars($category['name']) ?>
+                <option value="<?= $category->getId() ?>" <?= isset($filters['category_id']) && $filters['category_id'] == $category->getId() ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($category->getName()) ?>
                 </option>
             <?php endforeach; ?>
         </select>
@@ -34,11 +34,11 @@
         <tbody>
             <?php foreach ($products as $product): ?>
                 <tr>
-                    <td><img src="/assets/<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['image']) ?>" width="80"></td>
-                    <td><?= htmlspecialchars($product['name']) ?></td>
-                    <td><?= htmlspecialchars($product['description']) ?></td>
-                    <td><?= htmlspecialchars($product['price']) ?> €</td>
-                    <td><?= htmlspecialchars($product['stock']) ?></td>
+                    <td><img src="/assets/<?= htmlspecialchars($product->getImage()) ?>" alt="<?= htmlspecialchars($product->getImage()) ?>" width="80"></td>
+                    <td><?= htmlspecialchars($product->getName()) ?></td>
+                    <td><?= htmlspecialchars($product->getDescription()) ?></td>
+                    <td><?= htmlspecialchars($product->getPrice()) ?> €</td>
+                    <td><?= htmlspecialchars($product->getStock()) ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

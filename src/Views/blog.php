@@ -1,7 +1,6 @@
 <main class="container">
     <h1>Blog</h1>
 
- 
     <form method="GET" action="/blog">
         <label for="tag">Filtrer par tag:</label>
         <select id="tag" name="tag">
@@ -25,40 +24,37 @@
     <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin'): ?>
 
         <h2><?= isset($article) ? 'Modifier' : 'Créer' ?> un article</h2>
-        <form action="<?= isset($article) ? '/blog/edit/' . $article['_id'] : '/blog/create' ?>" method="POST">
+        <form action="<?= isset($article) ? '/blog/edit/' . $article->getId() : '/blog/create' ?>" method="POST">
             <label for="titre">Titre:</label>
-            <input type="text" id="titre" name="titre" value="<?= isset($article) ? htmlspecialchars($article['titre']) : '' ?>" required>
+            <input type="text" id="titre" name="titre" value="<?= isset($article) ? htmlspecialchars($article->getTitre()) : '' ?>" required>
 
             <label for="contenu">Contenu:</label>
-            <textarea id="contenu" name="contenu" required><?= isset($article) ? htmlspecialchars($article['contenu']) : '' ?></textarea>
+            <textarea id="contenu" name="contenu" required><?= isset($article) ? htmlspecialchars($article->getContenu()) : '' ?></textarea>
 
             <label for="auteur">Auteur:</label>
-            <input type="text" id="auteur" name="auteur" value="<?= isset($article) ? htmlspecialchars($article['auteur']) : '' ?>" required>
+            <input type="text" id="auteur" name="auteur" value="<?= isset($article) ? htmlspecialchars($article->getAuteur()) : '' ?>" required>
 
-            <label for="tags">Tags (séparés par des virgules):</label>
-            <input type="text" id="tags" name="tags" value="<?= isset($article) ? implode(', ', (array)$article['tags']) : '' ?>" required>
+            <label for="tags">Tags:</label>
+            <input type="text" id="tags" name="tags" value="<?= isset($article) ? htmlspecialchars(implode(', ', $article->getTags())) : '' ?>" required>
 
             <button type="submit"><?= isset($article) ? 'Modifier' : 'Créer' ?></button>
         </form>
     <?php endif; ?>
 
-
     <h2>Articles</h2>
-    <ul>
-        <?php foreach ($articles as $article): ?>
-            <li>
-                <h2><?= htmlspecialchars($article['titre']) ?></h2>
-                <p><?= htmlspecialchars($article['contenu']) ?></p>
-                <p><strong>Auteur:</strong> <?= htmlspecialchars($article['auteur']) ?></p>
-                <p><strong>Date de création:</strong> <?= htmlspecialchars($article['date_creation']->toDateTime()->format('Y-m-d H:i:s')) ?></p>
-                <p><strong>Tags:</strong> <?= implode(', ', (array)$article['tags']) ?></p>
-                <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin'): ?>
-                    <a href="/blog/edit/<?= $article['_id'] ?>">Modifier</a>
-                    <form action="/blog/delete/<?= $article['_id'] ?>" method="POST" style="display:inline;">
-                        <button type="submit">Supprimer</button>
-                    </form>
-                <?php endif; ?>
-            </li>
-        <?php endforeach; ?>
-    </ul>
+    <?php foreach ($articles as $article): ?>
+        <article>
+            <h3><?= htmlspecialchars($article->getTitre()) ?></h3>
+            <p><?= htmlspecialchars($article->getContenu()) ?></p>
+            <p><strong>Auteur:</strong> <?= htmlspecialchars($article->getAuteur()) ?></p>
+            <p><strong>Date de création:</strong> <?= htmlspecialchars($article->getDateCreation()->format('Y-m-d H:i:s')) ?></p>
+            <p><strong>Tags:</strong> <?= htmlspecialchars(implode(', ', $article->getTags())) ?></p>
+            <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin'): ?>
+                <form action="/blog/delete/<?= $article->getId() ?>" method="POST" style="display:inline;">
+                    <button type="submit">Supprimer</button>
+                </form>
+                <a href="/blog/edit/<?= $article->getId() ?>">Modifier</a>
+            <?php endif; ?>
+        </article>
+    <?php endforeach; ?>
 </main>

@@ -38,4 +38,12 @@ class MongoDB
 
         return $database;
     }
+    
+    public function __clone()
+    {
+    }
+
+    public function __wakeup()
+    {
+    }
 }

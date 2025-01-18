@@ -2,11 +2,38 @@
 
 namespace App\Models;
 
-class Blog extends MongoModel
+use App\Entities\Article;
+use MongoDB\BSON\ObjectId;
+use MongoDB\BSON\UTCDateTime;
+
+class Blog extends MongoAbstractModel
 {
     protected $collectionName = 'articles';
 
-    public function findFiltered(array $filters)
+    protected function createEntity(array $data): Article
+    {
+        return new Article(
+            (string)$data['_id'],
+            $data['titre'],
+            $data['contenu'],
+            $data['auteur'],
+            $data['date_creation']->toDateTime(),
+            $data['tags']->getArrayCopy()
+        );
+    }
+
+    protected function extractData($entity): array
+    {
+        return [
+            'titre' => $entity->getTitre(),
+            'contenu' => $entity->getContenu(),
+            'auteur' => $entity->getAuteur(),
+            'date_creation' => new UTCDateTime($entity->getDateCreation()->getTimestamp() * 1000),
+            'tags' => $entity->getTags(),
+        ];
+    }
+
+    public function findFiltered(array $filters): array
     {
         $query = [];
 
@@ -18,16 +45,47 @@ class Blog extends MongoModel
             $query['auteur'] = $filters['auteur'];
         }
 
-        return $this->collection->find($query)->toArray();
+        $results = $this->collection->find($query)->toArray();
+
+        $articles = [];
+        foreach ($results as $result) {
+            $articles[] = $this->createEntity((array)$result);
+        }
+
+        return $articles;
     }
 
-    public function getUniqueTags()
+    public function getUniqueTags(): array
     {
         return $this->collection->distinct('tags');
     }
 
-    public function getUniqueAuteurs()
+    public function getUniqueAuteurs(): array
     {
         return $this->collection->distinct('auteur');
+    }
+
+    public function findById(string $id): ?Article
+    {
+        $result = $this->collection->findOne(['_id' => new ObjectId($id)]);
+
+        if ($result) {
+            return $this->createEntity((array)$result);
+        }
+
+        return null;
+    }
+
+    public function insert(Article $article): void
+    {
+        $this->collection->insertOne($this->extractData($article));
+    }
+
+    public function update(string $id, Article $article): void
+    {
+        $this->collection->updateOne(
+            ['_id' => new ObjectId($id)],
+            ['$set' => $this->extractData($article)]
+        );
     }
 }
