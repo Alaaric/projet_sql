@@ -2,13 +2,22 @@
     <h1>Blog</h1>
 
     <form method="GET" action="/blog">
-        <label for="tag">Filtrer par tag:</label>
-        <select id="tag" name="tag">
-            <option value="">Tous les tags</option>
-            <?php foreach ($tags as $tag): ?>
-                <option value="<?= htmlspecialchars($tag) ?>" <?= isset($filters['tag']) && $filters['tag'] === $tag ? 'selected' : '' ?>><?= htmlspecialchars($tag) ?></option>
-            <?php endforeach; ?>
-        </select>
+        <label for="tags">Filtrer par tag:</label>
+        <div id="filter-tag-list" class="dropdown-check-list" tabindex="100">
+            <span class="anchor">Sélectionner les tags</span>
+            <ul class="items">
+                <li>
+                    <input type="checkbox" id="select_all_filter_tags" onclick="toggleUnselectAll(this)">
+                    <label for="select_all_filter_tags">Tous</label>
+                </li>
+                <?php foreach ($tags as $tag): ?>
+                <li>
+                    <input type="checkbox" name="tags[]" value="<?= htmlspecialchars($tag) ?>" <?= isset($filters['tags']) && in_array($tag, (array)$filters['tags']) ? 'checked' : '' ?>>
+                    <?= htmlspecialchars($tag) ?>
+                </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
 
         <label for="auteur">Filtrer par auteur:</label>
         <select id="auteur" name="auteur">
@@ -35,10 +44,24 @@
             <input type="text" id="auteur" name="auteur" value="<?= isset($article) ? htmlspecialchars($article->getAuteur()) : '' ?>" required>
 
             <label for="tags">Tags:</label>
-            <input type="text" id="tags" name="tags" value="<?= isset($article) ? htmlspecialchars(implode(', ', $article->getTags())) : '' ?>" required>
+            <div id="tag-list" class="dropdown-check-list" tabindex="100">
+                <span class="anchor">Sélectionner les tags</span>
+                <ul class="items">
+                    <li>
+                        <input type="checkbox" id="select_all_tags" onclick="toggleUnselectAll(this)">
+                        <label for="select_all_tags">Tous</label>
+                    </li>
+                    <?php foreach ($tags as $tag): ?>
+                    <li>
+                        <input type="checkbox" name="tags[]" value="<?= htmlspecialchars($tag) ?>" <?= isset($article) && in_array($tag, $article->getTags()) ? 'checked' : '' ?>>
+                        <?= htmlspecialchars($tag) ?>
+                    </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
 
-            <button type="submit" class="btn yes"><?= isset($article) ? 'Modifier' : 'Créer' ?></button>
-        </form>
+        <button type="submit" class="btn yes"><?= isset($article) ? 'Modifier' : 'Créer' ?></button>
+    </form>
     <?php endif; ?>
 
     <h2>Articles</h2>
@@ -58,3 +81,37 @@
         </article>
     <?php endforeach; ?>
 </main>
+
+<script>
+    const checkList = document.getElementById('tag-list');
+    checkList.getElementsByClassName('anchor')[0].onclick = function(evt) {
+        if (checkList.classList.contains('visible'))
+            checkList.classList.remove('visible');
+        else
+            checkList.classList.add('visible');
+    }
+
+    function toggleUnselectAll(selectAllCheckbox) {
+        const checkboxes = document.querySelectorAll('input[name="tags[]"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        selectAllCheckbox.checked = false;
+    }
+
+    const filterTagList = document.getElementById('filter-tag-list');
+    filterTagList.getElementsByClassName('anchor')[0].onclick = function(evt) {
+        if (filterTagList.classList.contains('visible'))
+            filterTagList.classList.remove('visible');
+        else
+            filterTagList.classList.add('visible');
+    }
+
+    function toggleUnselectAll(selectAllCheckbox) {
+        const checkboxes = document.querySelectorAll('input[name="tags[]"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        selectAllCheckbox.checked = false;
+    }
+</script>

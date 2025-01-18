@@ -17,7 +17,7 @@ class BlogController extends AbstractController
     public function index()
     {
         $filters = [
-            'tag' => $_GET['tag'] ?? null,
+            'tags' => $_GET['tags'] ?? null,
             'auteur' => $_GET['auteur'] ?? null,
         ];
 
@@ -27,23 +27,18 @@ class BlogController extends AbstractController
         $this->render('blog', ['articles' => $articles, 'filters' => $filters, 'tags' => $tags, 'auteurs' => $auteurs]);
     }
 
-    public function show($id)
-    {
-        $article = $this->model->findById($id);
-        $this->render('article', ['article' => $article]);
-    }
-
     public function create()
     {
         if ($this->isRequestMethod('POST')) {
             $data = $this->getInput();
+            $tags = isset($data['tags']) ? $data['tags'] : [];
             $article = new Article(
                 '',
                 $data['titre'],
                 $data['contenu'],
                 $data['auteur'],
                 new \DateTime(),
-                explode(',', $data['tags'])
+                $tags
             );
             $this->model->insert($article);
             $this->redirect('/blog');
@@ -56,19 +51,21 @@ class BlogController extends AbstractController
     {
         if ($this->isRequestMethod('POST')) {
             $data = $this->getInput();
+            $tags = isset($data['tags']) ? $data['tags'] : [];
             $article = new Article(
                 $id,
                 $data['titre'],
                 $data['contenu'],
                 $data['auteur'],
                 $data['date_creation'],
-                explode(',', $data['tags'])
+                $tags
             );
             $this->model->update($id, $article);
             $this->redirect('/blog');
         } else {
             $article = $this->model->findById($id);
-            $this->render('blog', ['article' => $article]);
+            $tags = $this->model->getUniqueTags();
+            $this->render('blog', ['article' => $article, 'allTags' => $tags]);
         }
     }
 

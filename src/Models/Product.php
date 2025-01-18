@@ -42,42 +42,54 @@ class Product extends AbstractModel
         $sql = "SELECT * FROM {$this->table}";
         $conditions = [];
         $params = [];
-    
+
         if (!empty($filters['category_id'])) {
-            $conditions[] = "category_id = :category_id";
-            $params[':category_id'] = $filters['category_id'];
+            $conditions[] = $this->buildInClause('category_id', $filters['category_id'], $params);
         }
-    
+
         if (!empty($filters['min_price'])) {
             $conditions[] = "price >= :min_price";
             $params[':min_price'] = $filters['min_price'];
         }
-    
+
         if (!empty($filters['max_price'])) {
             $conditions[] = "price <= :max_price";
             $params[':max_price'] = $filters['max_price'];
         }
-    
+
         if (!empty($conditions)) {
             $sql .= " WHERE " . implode(" AND ", $conditions);
         }
-    
+
         $stmt = $this->db->prepare($sql);
-    
-        foreach ($params as $key => &$val) {
-            $stmt->bindParam($key, $val);
+
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value, is_numeric($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
         }
-    
+        
         $stmt->execute();
-    
+
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
+
         $products = [];
         foreach ($results as $result) {
             $products[] = $this->createEntity($result);
         }
-    
+
         return $products;
+    }
+
+    // gestion dynamique de la construction de la clause IN pour le filtrage multiple des catégories
+    private function buildInClause(string $column, array $values, array &$params): string
+    {
+        $paramBinders = [];
+        foreach ($values as $index => $value) {
+            $paramBinder = ":{$column}_{$index}";
+            $paramBinders[] = $paramBinder;
+            $params[$paramBinder] = $value;
+        }
+
+        return "$column IN (" . implode(',', $paramBinders) . ")";
     }
 
     public function create(ProductEntity $product): void

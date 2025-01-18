@@ -37,8 +37,8 @@ class Blog extends MongoAbstractModel
     {
         $query = [];
 
-        if (!empty($filters['tag'])) {
-            $query['tags'] = $filters['tag'];
+        if (!empty($filters['tags'])) {
+            $query['tags'] = ['$in' => $filters['tags']];
         }
 
         if (!empty($filters['auteur'])) {

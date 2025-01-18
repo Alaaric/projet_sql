@@ -3,15 +3,20 @@
 
     <form method="GET" action="/products" class="filters">
         <label for="category_id">Catégorie :</label>
-        <select name="category_id" id="category_id" class="fields">
-            <option value="">Toutes</option>
-            <?php foreach ($categories as $category): ?>
-                <option value="<?= $category->getId() ?>" <?= isset($filters['category_id']) && $filters['category_id'] == $category->getId() ? 'selected' : '' ?>>
+            <div id="list1" class="dropdown-check-list" tabindex="100">
+                <span class="anchor">catégories</span>
+                <ul class="items">
+                    <li>
+                        <input type="checkbox" id="select_all" onclick="toggleUnselectAll(this)">
+                        <label for="select_all">Toutes</label>
+                    </li>
+                    <?php foreach ($categories as $category): ?>
+                    <li><input type="checkbox" name="category_id[]" value="<?= $category->getId() ?>" <?= isset($filters['category_id']) && in_array($category->getId(), (array)$filters['category_id']) ? 'checked' : '' ?>>
                     <?= htmlspecialchars($category->getName()) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-
+                    </input></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
         <label for="min_price">Prix min :</label>
         <input type="number" name="min_price" id="min_price" value="<?= htmlspecialchars($filters['min_price'] ?? '') ?>" step="42" class="fields">
 
@@ -44,3 +49,21 @@
         </tbody>
     </table>
 </main>
+
+<script>
+    const checkList = document.getElementById('list1');
+checkList.getElementsByClassName('anchor')[0].onclick = function(evt) {
+  if (checkList.classList.contains('visible'))
+    checkList.classList.remove('visible');
+  else
+    checkList.classList.add('visible');
+}
+
+function toggleUnselectAll(selectAllCheckbox) {
+        const checkboxes = document.querySelectorAll('input[name="category_id[]"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        selectAllCheckbox.checked = false;
+    }
+</script>
