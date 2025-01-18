@@ -1,4 +1,5 @@
-/* Reset some default browser styles */
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
 * {
   margin: 0;
   padding: 0;
@@ -11,7 +12,7 @@ body {
 }
 
 body {
-  font-family: Arial, sans-serif;
+  font-family: "Roboto", sans-serif;
   background-color: #121212;
   color: #e0e0e0;
   line-height: 1.6;
@@ -113,19 +114,6 @@ br {
   width: 20%;
 }
 
-form button {
-  background-color: #4caf50;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-form button:hover {
-  background-color: #45a049;
-}
-
 .form-input {
   padding: 0px;
   height: 30px;
@@ -144,13 +132,29 @@ form button:hover {
   border: none;
 }
 
-.form-button {
-  background-color: #4caf50;
-  color: white;
+.btn {
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.yes {
+  background-color: rgb(56, 142, 60);
+  color: white;
+}
+
+.yes:hover {
+  background-color: rgb(47, 127, 51);
+}
+
+.no {
+  background-color: rgb(211, 47, 47);
+  color: white;
+}
+
+.no:hover {
+  background-color: rgb(183, 28, 28);
 }
 
 table {
@@ -203,7 +207,6 @@ table th {
   padding: 20px;
   text-align: center;
   border-top: 1px solid #333;
-  width: 100%;
   flex-shrink: 0;
   margin-top: 10px;
 }
@@ -239,20 +242,6 @@ table th {
 .home p {
   font-size: 1.2em;
   margin-bottom: 20px;
-}
-
-.home .btn {
-  background-color: #4caf50;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  text-decoration: none;
-  font-size: 1em;
-}
-
-.home .btn:hover {
-  background-color: #45a049;
 }
 
 .about,

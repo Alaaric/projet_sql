@@ -18,7 +18,7 @@
             <?php endforeach; ?>
         </select>
 
-        <button type="submit">Filtrer</button>
+        <button type="submit" class="btn yes">Filtrer</button>
     </form>
 
     <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin'): ?>
@@ -37,7 +37,7 @@
             <label for="tags">Tags:</label>
             <input type="text" id="tags" name="tags" value="<?= isset($article) ? htmlspecialchars(implode(', ', $article->getTags())) : '' ?>" required>
 
-            <button type="submit"><?= isset($article) ? 'Modifier' : 'Créer' ?></button>
+            <button type="submit" class="btn yes"><?= isset($article) ? 'Modifier' : 'Créer' ?></button>
         </form>
     <?php endif; ?>
 
@@ -51,7 +51,7 @@
             <p><strong>Tags:</strong> <?= htmlspecialchars(implode(', ', $article->getTags())) ?></p>
             <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin'): ?>
                 <form action="/blog/delete/<?= $article->getId() ?>" method="POST" style="display:inline;">
-                    <button type="submit">Supprimer</button>
+                    <button type="submit" class="btn no">Supprimer</button>
                 </form>
                 <a href="/blog/edit/<?= $article->getId() ?>">Modifier</a>
             <?php endif; ?>

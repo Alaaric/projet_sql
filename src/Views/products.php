@@ -18,7 +18,7 @@
         <label for="max_price">Prix max :</label>
         <input type="number" name="max_price" id="max_price" value="<?= htmlspecialchars($filters['max_price'] ?? '') ?>" step="42" class="fields">
 
-        <button type="submit">Filtrer</button>
+        <button type="submit" class="btn yes">Filtrer</button>
     </form>
 
     <table>

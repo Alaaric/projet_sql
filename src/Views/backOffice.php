@@ -41,14 +41,14 @@
                                 <input type="text" name="name" value="<?= $category->getName() ?>">
                         </td>
                         <td sl>
-                                <button type="submit" class="form-button">Éditer</button>
+                                <button type="submit" class="btn yes">Éditer</button>
                             </form>
                         
                             <form action="/backoffice/categories/delete" method="POST" style="display:inline;">
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="entity" value="category">
                                 <input type="hidden" name="id" value="<?= $category->getId() ?>">
-                                <button type="submit" class="form-button">Supprimer</button>
+                                <button type="submit" class="btn no">Supprimer</button>
                             </form>
                         </td>
                     </tr>
@@ -61,7 +61,7 @@
             <input type="hidden" name="action" value="add">
             <input type="hidden" name="entity" value="category">
             <input type="text" name="name" placeholder="nom de catégorie" required>
-            <button type="submit">Ajouter</button>
+            <button type="submit" class="btn yes">Ajouter</button>
         </form>
     </article>
     <br>
@@ -109,21 +109,21 @@
                             </select>
                         </td>
                         <td>
-                            <label for="file-upload" class="custom-file-upload">
+                            <label for="file-upload-<?= $product->getId() ?>" class="custom-file-upload">
                                 choisir une image
                             </label>
-                            <input type="file" id="file-upload" name="image" class="file-upload">
+                            <input type="file" id="file-upload-<?= $product->getId() ?>" name="image" class="file-upload" onchange="previewImage(event, 'image-preview-<?= $product->getId() ?>')">
                             <input type="hidden" name="current_image" value="<?= htmlspecialchars($product->getImage()) ?>">
-                            <img src="/assets/<?= htmlspecialchars($product->getImage()) ?>" alt="<?= htmlspecialchars($product->getImage()) ?>" width="80">
+                            <img id="image-preview-<?= $product->getId() ?>" src="/assets/<?= htmlspecialchars($product->getImage()) ?>" alt="<?= htmlspecialchars($product->getImage()) ?>" width="80">
                         </td>
                         <td class="product-actions">
-                            <button type="submit" class="form-button">Éditer</button>
+                            <button type="submit" class="btn yes">Éditer</button>
                             </form>
                             <form action="/backoffice/products/delete" method="POST">
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="entity" value="product">
                                 <input type="hidden" name="id" value="<?= $product->getId() ?>">
-                                <button type="submit" class="form-button">Supprimer</button>
+                                <button type="submit" class="btn no">Supprimer</button>
                             </form>
                         </td>
                     </tr>
@@ -154,10 +154,11 @@
                 <?php endforeach; ?>
             </select>
 
-            <label for="image">Image :</label>
-            <input type="file" id="image" name="image">
+            <label for="image" class="custom-file-upload">Image :</label>
+            <input type="file" id="image" name="image" class="file-upload" onchange="previewImage(event, 'image-preview-add')">
+            <img id="image-preview-add" src="#" alt="Image Preview" style="display: none;" width="80">
 
-            <button type="submit">Ajouter</button>
+            <button type="submit" class="btn yes">Ajouter</button>
         </form>
     </article>
 <br>
@@ -188,14 +189,14 @@
                                 </select>
                         </td>
                         <td>
-                                <button type="submit"  class="form-button">Edit</button>
+                                <button type="submit"  class="btn yes">Edit</button>
                             </form>
 
                             <form action="/backoffice/users/delete" method="POST" style="display:inline;">
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="entity" value="user">
                                 <input type="hidden" name="id" value="<?= $user->getId() ?>">
-                                <button type="submit"  class="form-button">Delete</button>
+                                <button type="submit"  class="btn no">Delete</button>
                             </form>
                         </td>
                     </tr>
@@ -204,3 +205,15 @@
         </table>
     </article>
 </main>
+
+<script>
+function previewImage(e, previewId) {
+    const reader = new FileReader();
+    reader.onload = function() {
+        const output = document.getElementById(previewId);
+        output.src = reader.result;
+        output.style.display = 'inline';
+    };
+    reader.readAsDataURL(e.target.files[0]);
+}
+</script>
