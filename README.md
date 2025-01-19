@@ -16,43 +16,53 @@ Ce projet est une application PHP utilisant MySQL comme base de données Sql et 
 Assurez-vous d’avoir les outils suivants installés sur votre machine :
 
 - [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+- [Git](https://git-scm.com/)
 
 ## Installation et mise en place
 
 1. **Cloner le projet :**
 
    ```bash
-   git clone <URL_DU_DEPOT>
+   git clone git@github.com:Alaaric/projet_sql.git
+   cd projet_sql
    ```
 
 2. **Configurer le fichier `.env` :**
 
-   Créez un fichier `.env` à la racine du projet et remplissez-le avec les informations suivantes :
+   Créez un fichier `.env` sur la base du `.env.sample` à la racine du projet et remplissez-le avec les informations suivantes :
 
    ```env
-   DB_NAME=nom_de_la_base_de_donnees
-   DB_USER=utilisateur
-   DB_PASSWORD=mot_de_passe
-   MYSQL_ROOT_PASSWORD=mot_de_passe_root
+   DB_HOST=mysql_db
+   DB_NAME=db_name
+   DB_USER=db_user
+   DB_PASSWORD=db_password
+   MYSQL_ROOT_PASSWORD=root_password
+
+   MONGO_HOST=mongo-db
+   MONGO_INITDB_ROOT_USERNAME=db_user
+   MONGO_INITDB_ROOT_PASSWORD=db_password
+   MONGO_INITDB_PORT=27017
+   MONGO_INITDB_DATABASE=db_name
    ```
 
-3. **Installer les dépendances PHP :**
-
-   ```bash
-   composer install
-   ```
-
-4. **Démarrer les conteneurs Docker :**
+3. **Démarrer les conteneurs Docker :**
 
    ```bash
    docker-compose up --build
    ```
 
-5. **Accéder à l’application :**
+4. **Accéder à l’application :**
    Ouvrez votre navigateur et rendez-vous à :
+
    ```
    http://localhost:8080
    ```
+
+5. **Se connecter :**
+
+- Pour un compte admin': email: `place@holder.com` mdp: `test`.
+- Pour un compte client: email: `lorem@ipsum.com` mdp: `test`.
 
 ## Structure du projet
 
@@ -60,6 +70,11 @@ Assurez-vous d’avoir les outils suivants installés sur votre machine :
 - **`public/`** : Contient les fichiers accessibles publiquement, y compris `index.php`.
 - **`docker-compose.yml`** : Configuration Docker Compose.
 - **`.env`** : Fichier d’environnement pour les variables sensibles.
-- **`setup-database.sql`** : Script SQL pour réinisialiser la base de données si besoin.
+- **`setup-database.sql`** : Script SQL pour réinisialiser la base de données MySQL si besoin.
+- **`setup-mongo.js`** : Script JS pour réinisialiser la base de données MongoDB si besoin.
 
-se connecter avec les identifier place@holder mdp: test pour un compte admin
+## Autres Infos
+
+- Pas le temps d'intégrer les commandes correctement donc j'ai préféré ne pas le faire.
+- Je n'ai pas investis beaucoup de temps sur tout ce qui concerne l'interface donc c'est minimaliste, mal centré, mal placé, mal organisé. J'ai juste fais en sorte que ce soit un peux mieux que pas de CSS du tout.
+- Gestion des erreurs incomplète.

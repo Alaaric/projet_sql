@@ -70,8 +70,8 @@ INSERT INTO products (id, name, description, price, stock, category_id, image) V
 
 INSERT INTO users (id, name, firstname, email, password, role) VALUES
 (UUID(), 'Place', 'Holder', 'place@holder.com', '$2y$10$GT4ZSG8MClNbl4z28tGC8eMcg3nyIFQiYeM8D6wm9ob0ySqLRF6YS', 'admin'),
-(UUID(), 'Jean', 'Michel', 'jean@michel.com', '$2y$10$GT4ZSG8MClNbl4z28tGC8eMcg3nyIFQiYeM8D6wm9ob0ySqLRF6YS', 'client'),
-(UUID(), 'Lorem', 'Ipsum', 'lorem@ipsum.com', '$2y$10$GT4ZSG8MClNbl4z28tGC8eMcg3nyIFQiYeM8D6wm9ob0ySqLRF6YS', 'admin');
+(UUID(), 'Jean', 'Michel', 'jean@michel.com', '$2y$10$GT4ZSG8MClNbl4z28tGC8eMcg3nyIFQiYeM8D6wm9ob0ySqLRF6YS', 'admin'),
+(UUID(), 'Lorem', 'Ipsum', 'lorem@ipsum.com', '$2y$10$GT4ZSG8MClNbl4z28tGC8eMcg3nyIFQiYeM8D6wm9ob0ySqLRF6YS', 'client');
 
 INSERT INTO orders (id, user_id, date_order, status) VALUES
 (UUID(), (SELECT id FROM users WHERE email = 'place@holder.com'), NOW(), 'en cours'),
