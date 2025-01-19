@@ -20,19 +20,27 @@ abstract class MongoAbstractModel
 
     public function findAll(): array
     {
-        $results = $this->collection->find()->toArray();
+        try {
+            $results = $this->collection->find()->toArray();
 
-        $entities = [];
-        foreach ($results as $result) {
-            $entities[] = $this->createEntity($result);
+            $entities = [];
+            foreach ($results as $result) {
+                $entities[] = $this->createEntity($result);
+            }
+
+            return $entities;
+        } catch (\Exception $e) {
+            throw new \Exception('Une erreur est survenue lors de la récupération des enregistrements.', 500, $e);
         }
-
-        return $entities;
     }
 
 
     public function delete($id)
     {
-        return $this->collection->deleteOne(['_id' => new \MongoDB\BSON\ObjectId($id)]);
+        try {
+            return $this->collection->deleteOne(['_id' => new \MongoDB\BSON\ObjectId($id)]);
+        } catch (\Exception $e) {
+            throw new \Exception('Une erreur est survenue lors de la suppression de l\'enregistrement.', 500, $e);
+        }
     }
 }

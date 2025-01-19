@@ -1,7 +1,7 @@
 <main class="container">
-    <h1>Blog</h1>
+    <h1>Articles</h1>
 
-    <form method="GET" action="/blog">
+    <form method="GET" action="/article">
         <label for="tags">Filtrer par tag:</label>
         <div id="filter-tag-list" class="dropdown-check-list" tabindex="100">
             <span class="anchor">Sélectionner les tags</span>
@@ -33,7 +33,7 @@
     <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin'): ?>
 
         <h2><?= isset($article) ? 'Modifier' : 'Créer' ?> un article</h2>
-        <form action="<?= isset($article) ? '/blog/edit/' . $article->getId() : '/blog/create' ?>" method="POST">
+        <form action="<?= isset($article) ? '/article/edit/' . $article->getId() : '/article/create' ?>" method="POST">
             <label for="titre">Titre:</label>
             <input type="text" id="titre" name="titre" value="<?= isset($article) ? htmlspecialchars($article->getTitre()) : '' ?>" required>
 
@@ -67,6 +67,7 @@
     <h2>Articles</h2>
     <?php if (!empty($articles)): ?>
         <?php foreach ($articles as $article): ?>
+            <br>
             <article>
                 <h3><?= htmlspecialchars($article->getTitre()) ?></h3>
                 <p><?= htmlspecialchars($article->getContenu()) ?></p>
@@ -74,10 +75,10 @@
                 <p><strong>Date de création:</strong> <?= htmlspecialchars($article->getDateCreation()->format('Y-m-d H:i:s')) ?></p>
                 <p><strong>Tags:</strong> <?= htmlspecialchars(implode(', ', $article->getTags())) ?></p>
                 <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin'): ?>
-                    <form action="/blog/delete/<?= $article->getId() ?>" method="POST" style="display:inline;">
+                    <form action="/article/delete/<?= $article->getId() ?>" method="POST" style="display:inline;">
                         <button type="submit" class="btn no">Supprimer</button>
                     </form>
-                    <a href="/blog/edit/<?= $article->getId() ?>">Modifier</a>
+                    <a href="/article/edit/<?= $article->getId() ?>" class="btn yes">Modifier</a>
                 <?php endif; ?>
             </article>
         <?php endforeach; ?>

@@ -34,7 +34,7 @@ class Router
         foreach ($this->routes as $route) {
             if ($route['method'] === $method && preg_match($this->convertToRegex($route['uri']), $uri, $matches)) {
                 if (!$this->checkPermissions($route['role'])) {
-                    echo "Accès interdit !";
+                    $this->renderError('Accès interdit !', 403);
                     return;
                 }
 
@@ -48,7 +48,7 @@ class Router
             }
         }
 
-        echo "Page non trouvée!";
+        $this->renderError('Page non trouvée!', 404);
     }
 
     private function convertToRegex($uri)
@@ -71,5 +71,15 @@ class Router
         }
 
         return true;
+    }
+
+    private function renderError(string $message, int $statusCode)
+    {
+        http_response_code($statusCode);
+        if ($statusCode === 404) {
+            require_once "../src/Views/404.php";
+        } else {
+            require_once "../src/Views/error.php";
+        }
     }
 }

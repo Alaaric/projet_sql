@@ -26,19 +26,9 @@ class Article
         return $this->id;
     }
 
-    public function setId(string $id): void
-    {
-        $this->id = $id;
-    }
-
     public function getTitre(): string
     {
         return $this->titre;
-    }
-
-    public function setTitre(string $titre): void
-    {
-        $this->titre = $titre;
     }
 
     public function getContenu(): string
@@ -46,19 +36,9 @@ class Article
         return $this->contenu;
     }
 
-    public function setContenu(string $contenu): void
-    {
-        $this->contenu = $contenu;
-    }
-
     public function getAuteur(): string
     {
         return $this->auteur;
-    }
-
-    public function setAuteur(string $auteur): void
-    {
-        $this->auteur = $auteur;
     }
 
     public function getDateCreation(): \DateTime
@@ -66,18 +46,8 @@ class Article
         return $this->dateCreation;
     }
 
-    public function setDateCreation(\DateTime $dateCreation): void
-    {
-        $this->dateCreation = $dateCreation;
-    }
-
     public function getTags(): array
     {
         return $this->tags;
-    }
-
-    public function setTags(array $tags): void
-    {
-        $this->tags = $tags;
     }
 }

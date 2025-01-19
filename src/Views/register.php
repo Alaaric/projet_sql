@@ -2,6 +2,10 @@
 
     <div class="login-form-container">
         <h2>Inscription</h2>
+
+        <?php if (isset($error)): ?>
+            <p class="error"><?= $error ?></p>
+        <?php endif; ?>
         <form action="/auth/register/submit" method="POST">
             <input type="text" name="name" placeholder="Nom" required>
             <input type="text" name="firstname" placeholder="Prénom" required>

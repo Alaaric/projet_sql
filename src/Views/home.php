@@ -2,7 +2,7 @@
     <section class="home">
         <h1>Bienvenue sur NFCHAT</h1>
         <p>Découvrez nos NFT de chats (promis c'est pas du scam).</p>
-        <a href="/products" class="btn">Voir les produits</a>
+        <a href="/products" class="btn yes">Voir les produits</a>
     </section>
 
     <section class="about">

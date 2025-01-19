@@ -2,16 +2,18 @@
 
 namespace App\Controllers;
 
-use App\Models\User;
-use App\Entities\User as UserEntity;
+use App\Models\UserModel;
+use App\Entities\User;
+use Exception;
+use App\Exceptions\UserModelException;
 
 class AuthController extends AbstractController
 {
-    protected User $userModel;
+    protected UserModel $userModel;
 
     public function __construct()
     {
-        $this->userModel = new User();
+        $this->userModel = new UserModel();
     }
 
     public function showRegisterForm()
@@ -26,58 +28,85 @@ class AuthController extends AbstractController
 
     public function register()
     {
-        $data = $_POST;
+        try {
+            $data = $_POST;
 
-        if (empty($data['name']) || empty($data['firstname']) || empty($data['email']) || empty($data['password']) || $data['password'] !== $data['confirm_password']) {
-            $this->render('register', ['isRegister' => true, 'data' => $data, 'error' => 'Veuillez remplir tous les champs correctement.']);
-            return;
+            if (empty($data['name']) || empty($data['firstname']) || empty($data['email']) || empty($data['password']) || $data['password'] !== $data['confirm_password']) {
+                $this->render('register', ['isRegister' => true, 'data' => $data, 'error' => 'Veuillez remplir tous les champs correctement.']);
+                return;
+            }
+
+            if (!$this->isStrongPassword($data['password'])) {
+                $this->render('register', ['isRegister' => true, 'data' => $data, 'error' => 'Le mot de passe doit contenir au moins 8 caractères, une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial.']);
+                return;
+            }
+
+            $user = new User(
+                '',
+                $data['name'],
+                $data['firstname'],
+                $data['email'],
+                password_hash($data['password'], PASSWORD_DEFAULT),
+                'client'
+            );
+
+            $this->userModel->create($user);
+
+            $this->render('login', ['success' => 'Inscription réussie. Vous pouvez maintenant vous connecter.']);
+            exit();
+        } catch (UserModelException $e) {
+            $this->render('error', ['message' => 'Une erreur est survenue lors de l\'inscription. Veuillez vérifier la connexion à la base de données.']);
+        } catch (Exception $e) {
+            $this->render('error', ['message' => 'Une erreur inattendue est survenue lors de l\'inscription.']);
         }
-
-        $user = new UserEntity(
-            '',
-            $data['name'],
-            $data['firstname'],
-            $data['email'],
-            password_hash($data['password'], PASSWORD_DEFAULT),
-            'client'
-        );
-
-        $this->userModel->create($user);
-
-        $this->render('login', ['success' => 'Inscription réussie. Vous pouvez maintenant vous connecter.']);
-        exit();
     }
 
     public function login()
     {
-        $data = $_POST;
+        try {
+            $data = $_POST;
 
-        if (empty($data['email']) || empty($data['password'])) {
-            $this->render('login', ['error' => 'Veuillez remplir tous les champs correctement.']);
-            return;
+            if (empty($data['email']) || empty($data['password'])) {
+                $this->render('login', ['error' => 'Veuillez remplir tous les champs correctement.']);
+                return;
+            }
+
+            $user = $this->userModel->findByEmail($data['email']);
+
+            if ($user && password_verify($data['password'], $user->getPassword())) {
+                $_SESSION['user'] = [
+                    'id' => $user->getId(),
+                    'name' => $user->getName(),
+                    'role' => $user->getRole(),
+                ];
+
+                $this->redirect('/');
+                exit();
+            }
+
+            $this->render('login', ['error' => 'Email ou mot de passe incorrect.']);
+        } catch (UserModelException $e) {
+            $this->render('error', ['message' => 'Une erreur est survenue lors de la connexion. Veuillez vérifier la connexion à la base de données.']);
+        } catch (Exception $e) {
+            $this->render('error', ['message' => 'Une erreur inattendue est survenue lors de la connexion.']);
         }
-
-        $user = $this->userModel->findByEmail($data['email']);
-
-        if ($user && password_verify($data['password'], $user->getPassword())) {
-            $_SESSION['user'] = [
-                'id' => $user->getId(),
-                'name' => $user->getName(),
-                'role' => $user->getRole(),
-            ];
-
-            $this->redirect('/');
-            exit();
-        }
-
-        $this->render('login', ['error' => 'Email ou mot de passe incorrect.']);
     }
 
     public function logout()
     {
-        session_unset();
-        session_destroy();
-        $this->render('login');
-        exit();
+        try {
+            session_unset();
+            session_destroy();
+            $this->render('login');
+            exit();
+        } catch (Exception $e) {
+            $this->render('error', ['message' => 'Une erreur est survenue lors de la déconnexion.']);
+        }
+    }
+
+    private function isStrongPassword(string $password): bool
+    {
+        $pattern = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/';
+        return preg_match($pattern, $password) === 1;
     }
 }

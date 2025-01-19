@@ -4,6 +4,7 @@ namespace App\Models;
 
 use PDO;
 use App\Databases\Database;
+use Exception;
 
 abstract class AbstractModel
 {
@@ -19,35 +20,48 @@ abstract class AbstractModel
 
     public function findAll(): array
     {
-        $stmt = $this->db->query("SELECT * FROM {$this->table}");
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $stmt = $this->db->query("SELECT * FROM {$this->table}");
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        $entities = [];
-        foreach ($results as $result) {
-            $entities[] = $this->createEntity($result);
+            $entities = [];
+            foreach ($results as $result) {
+                $entities[] = $this->createEntity($result);
+            }
+
+            return $entities;
+        } catch (Exception $e) {
+            throw new Exception('Une erreur est survenue lors de la récupération des enregistrements.', 500, $e);
         }
-
-        return $entities;
     }
 
     public function findById(string $id)
     {
-        $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE id = :id");
-        $stmt->bindParam(':id', $id, PDO::PARAM_STR);
-        $stmt->execute();
+        try {
+            $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE id = :id");
+            $stmt->bindParam(':id', $id, PDO::PARAM_STR);
+            $stmt->execute();
 
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($result) {
-            return $this->createEntity($result);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($result) {
+                return $this->createEntity($result);
+            }
+
+            return null;
+
+        } catch (Exception $e) {
+            throw new Exception('Une erreur est survenue lors de la récupération de l\'enregistrement.', 500, $e);
         }
-
-        return null;
     }
 
     public function delete(string $id): bool
     {
-        $stmt = $this->db->prepare("DELETE FROM {$this->table} WHERE id = :id");
-        $stmt->bindParam(':id', $id, PDO::PARAM_STR);
-        return $stmt->execute();
+        try {
+            $stmt = $this->db->prepare("DELETE FROM {$this->table} WHERE id = :id");
+            $stmt->bindParam(':id', $id, PDO::PARAM_STR);
+            return $stmt->execute();
+        } catch (Exception $e) {
+            throw new Exception('Une erreur est survenue lors de la suppression de l\'enregistrement.', 500, $e);
+        }
     }
 }
