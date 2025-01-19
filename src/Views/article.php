@@ -10,7 +10,7 @@
                     <input type="checkbox" id="select_all_filter_tags" onclick="toggleUnselectAll(this)">
                     <label for="select_all_filter_tags">Tous</label>
                 </li>
-                <?php foreach ($tags as $tag): ?>
+                <?php foreach ($tags as $tag):?>
                 <li>
                     <input type="checkbox" name="tags[]" value="<?= htmlspecialchars($tag) ?>" <?= isset($filters['tags']) && in_array($tag, (array)$filters['tags']) ? 'checked' : '' ?>>
                     <?= htmlspecialchars($tag) ?>
@@ -88,35 +88,39 @@
 </main>
 
 <script>
-    const checkList = document.getElementById('tag-list');
-    checkList.getElementsByClassName('anchor')[0].onclick = function(evt) {
-        if (checkList.classList.contains('visible'))
-            checkList.classList.remove('visible');
-        else
-            checkList.classList.add('visible');
-    }
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkList = document.getElementById('tag-list');
+        if (checkList) {
+            const anchor = checkList.getElementsByClassName('anchor')[0];
+            if (anchor) {
+                anchor.onclick = function(evt) {
+                    if (checkList.classList.contains('visible'))
+                        checkList.classList.remove('visible');
+                    else
+                        checkList.classList.add('visible');
+                }
+            }
+        }
 
-    function toggleUnselectAll(selectAllCheckbox) {
-        const checkboxes = document.querySelectorAll('input[name="tags[]"]');
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = false;
-        });
-        selectAllCheckbox.checked = false;
-    }
+        function toggleUnselectAll(selectAllCheckbox) {
+            const checkboxes = document.querySelectorAll('input[name="tags[]"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            selectAllCheckbox.checked = false;
+        }
 
-    const filterTagList = document.getElementById('filter-tag-list');
-    filterTagList.getElementsByClassName('anchor')[0].onclick = function(evt) {
-        if (filterTagList.classList.contains('visible'))
-            filterTagList.classList.remove('visible');
-        else
-            filterTagList.classList.add('visible');
-    }
-
-    function toggleUnselectAll(selectAllCheckbox) {
-        const checkboxes = document.querySelectorAll('input[name="tags[]"]');
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = false;
-        });
-        selectAllCheckbox.checked = false;
-    }
+        const filterTagList = document.getElementById('filter-tag-list');
+        if (filterTagList) {
+            const anchor = filterTagList.getElementsByClassName('anchor')[0];
+            if (anchor) {
+                anchor.onclick = function(evt) {
+                    if (filterTagList.classList.contains('visible'))
+                        filterTagList.classList.remove('visible');
+                    else
+                        filterTagList.classList.add('visible');
+                }
+            }
+        }
+    });
 </script>

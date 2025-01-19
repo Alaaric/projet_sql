@@ -78,3 +78,4 @@ Assurez-vous d’avoir les outils suivants installés sur votre machine :
 - Pas le temps d'intégrer les commandes correctement donc j'ai préféré ne pas le faire.
 - Je n'ai pas investis beaucoup de temps sur tout ce qui concerne l'interface donc c'est minimaliste, mal centré, mal placé, mal organisé. J'ai juste fais en sorte que ce soit un peux mieux que pas de CSS du tout.
 - Gestion des erreurs incomplète.
+- Les mdp des utilisateurs placeholders sont volontairement simple pour tester mais une vérification de mdp fort pour les nouveau utilisateur est en place.
